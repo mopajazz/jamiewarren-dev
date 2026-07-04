@@ -18,7 +18,7 @@ discipline in minutes. The chemistry demo below took one prompt.**
 | **Context** | Study companions paired with SCORM lessons at Blue Ridge Community College (DME-115, and other courses), generalized into a reusable generator |
 | **Timeline** | Developed iteratively from course-specific tools into a reusable AI-assisted generation workflow |
 | **Tools** | HTML/CSS/JavaScript (zero-build), GitHub (version control + deploy pipeline), Vercel, Claude (skill authoring) |
-| **Artifact** | [Chemistry demo — Molecular Glow Lab](https://teaching-beta.vercel.app/) · [Skill source on GitHub](https://github.com/mopajazz/Interactive-Study-Tool-) |
+| **Artifact** | [Chemistry demo — Molecular Glow Lab](https://teaching-beta.vercel.app/) · [Skill source on GitHub](https://github.com/mopajazz/Interactive-Study-Tool-) · [Claude skill download](/downloads/interactive-study-tool.skill) |
 
 ### The Problem
 
@@ -104,4 +104,5 @@ design system, a style guide, and a QA checklist that happens to execute. I've
 
 - [Molecular Glow Lab — chemistry demo](https://teaching-beta.vercel.app/)
 - [Interactive Study Tool skill — GitHub](https://github.com/mopajazz/Interactive-Study-Tool-)
+- [Download the Claude skill](/downloads/interactive-study-tool.skill)
 - Related: [Moodle Lessons → SCORM](/work/moodle-lessons-to-scorm/) · [BRCC HTML Component Library](/lab/)
