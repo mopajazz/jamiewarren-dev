@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const work = (await getCollection('work')).sort((a,b) => a.data.order - b.data.order);
+const featured = work.filter(w => w.data.featured);
+const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.order).slice(0, 4);
+---
+<Base title="Jamie Warren — Instructional Designer & Developer">
+  <section class="band">
+    <div class="wrap">
+      <p class="eyebrow">Instructional design &amp; development // Western North Carolina</p>
+      <h1>Learning experiences, and the machinery behind them.</h1>
+      <p class="lede">Interactive learning, and the pipelines, tools, and component systems that make it hold up — SCORM conversions, Canvas rebuilds, and study tools that run for semesters without a maintenance call.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="section-head"><span class="idx">01</span><h2>Case studies</h2></div>
+      <ul class="rows">
+        {featured.map((w, i) => (
+          <li>
+            <a class="row" href={`/work/${w.slug}/`}>
+              <span class="idx">{String(i+1).padStart(2,'0')}</span>
+              <span>
+                <span class="row-title">{w.data.title}</span>
+                <p class="row-summary">{w.data.summary}</p>
+                <p class="row-meta">{w.data.tools.join(' / ')}</p>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p style="margin-top:1.5rem;"><a href="/work/">All case studies</a></p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="section-head"><span class="idx">02</span><h2>The Lab</h2></div>
+      <ul class="rows">
+        {lab.map((l, i) => (
+          <li>
+            {l.data.link ? (
+              <a class="row" href={l.data.link}>
+                <span class="idx">{String(i+1).padStart(2,'0')}</span>
+                <span>
+                  <span class="row-title">{l.data.title}</span>
+                  <p class="row-summary">{l.data.blurb}</p>
+                  <p class="row-meta">{l.data.tags.join(' / ')}</p>
+                </span>
+              </a>
+            ) : (
+              <div class="row">
+                <span class="idx">{String(i+1).padStart(2,'0')}</span>
+                <span>
+                  <span class="row-title">{l.data.title}</span>
+                  <p class="row-summary">{l.data.blurb}</p>
+                  <p class="row-meta">{l.data.tags.join(' / ')}</p>
+                </span>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p style="margin-top:1.5rem;"><a href="/lab/">Everything in the Lab</a></p>
+    </div>
+  </section>
+</Base>

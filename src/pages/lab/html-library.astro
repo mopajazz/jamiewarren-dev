@@ -1,0 +1,488 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const tokens = [
+  ['Primary', '#273a80', 'Headings, navy CTAs, borders'],
+  ['Secondary', '#406daa', 'Subtitles, italics, accents'],
+  ['Warning', '#e12526', 'Required and alert callouts'],
+  ['Highlight', '#fdb71a', 'Underlines, highlight borders'],
+  ['Primary tint', '#eef2f9', 'Card backgrounds'],
+  ['Warning tint', '#fdecec', 'Warning callout fills'],
+  ['Highlight tint', '#fff8e6', 'Highlight callout fills'],
+];
+
+const components = [
+  ['01', 'Section heading', 'Page section dividers'],
+  ['02', 'Callout - info', 'Tips, definitions, context'],
+  ['03', 'Callout - warning', 'Required actions, deadlines'],
+  ['04', 'Callout - highlight', 'Read-me intros, key takeaways'],
+  ['05', 'Hero banner with overlay', 'Page tops, unit intros'],
+  ['06', 'Card grid', 'Resource lists, office directories'],
+  ['07', 'CTA button', 'Submit, register, external links'],
+  ['08', 'Data table', 'Schedules, grading, comparisons'],
+  ['09', 'Instructor card', 'Meet-your-instructor blocks'],
+  ['10', 'Two-column layout', 'Side-by-side content'],
+  ['11', 'Outcomes list', 'Lesson or unit objectives'],
+  ['12', 'Pull quote', 'Emphasis, framing statements'],
+  ['13', 'Unit outline', 'Module objectives and graded activities'],
+];
+---
+
+<Base title="Canvas HTML Library - Jamie Warren" description="A Canvas-safe HTML component library with rendered color tokens and accessible component previews.">
+  <article class="library">
+    <p class="eyebrow">Lab // Canvas-safe HTML</p>
+    <h1>Canvas HTML Library</h1>
+    <p class="lede">A reusable library of clean, copy-paste HTML blocks for the Canvas RCE. This version renders the actual color system outside Notion, where the navy, blue, red, and gold treatments display properly.</p>
+
+    <p class="source-note">Source reference: <a href="https://emerald-tuesday-a41.notion.site/Canvas-HTML-Library-52036ab7196b4d98a98fb2767aa7c1bf?source=copy_link">Notion library</a></p>
+
+    <section class="library-section">
+      <div class="section-head"><span class="idx">01</span><h2>Design tokens</h2></div>
+      <p>Swap these seven hex values to rebrand the full library. The previews below use the same defaults consistently.</p>
+      <div class="token-grid" aria-label="Canvas HTML Library design tokens">
+        {tokens.map(([name, hex, usage]) => (
+          <div class="token">
+            <span class="swatch" style={`background:${hex};`} aria-hidden="true"></span>
+            <span>
+              <strong>{name}</strong>
+              <code>{hex}</code>
+              <small>{usage}</small>
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="library-section">
+      <div class="section-head"><span class="idx">02</span><h2>Component index</h2></div>
+      <div class="component-index">
+        {components.map(([num, name, use]) => (
+          <div>
+            <span class="meta">{num}</span>
+            <strong>{name}</strong>
+            <small>{use}</small>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="library-section">
+      <div class="section-head"><span class="idx">03</span><h2>Rendered components</h2></div>
+
+      <div class="component">
+        <h3>Section heading</h3>
+        <div class="canvas-preview">
+          <h2 class="canvas-section-heading">Section Title</h2>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Callouts</h3>
+        <div class="canvas-preview stack">
+          <div class="canvas-callout info" role="note">
+            <p><strong>Keep going.</strong> Below you'll find additional information about the topic at hand.</p>
+          </div>
+          <div class="canvas-callout warning" role="note">
+            <p><strong>Required.</strong> This task must be completed before the next module unlocks.</p>
+          </div>
+          <div class="canvas-callout highlight" role="note">
+            <p class="callout-label">READ ME - YES, REALLY</p>
+            <p>This is the friendly opener that reframes important content so students actually read it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Hero banner with overlay</h3>
+        <div class="canvas-preview">
+          <div class="canvas-hero">
+            <div>
+              <p>EYEBROW LABEL</p>
+              <h2>Page Title Goes Here</h2>
+              <span>Optional supporting sentence.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Card grid</h3>
+        <div class="canvas-preview">
+          <div class="canvas-card-grid">
+            {['One', 'Two', 'Three'].map((label, i) => (
+              <div class="canvas-card">
+                <p>{String(i + 1).padStart(2, '0')} - CATEGORY</p>
+                <h4>Card Title {label}</h4>
+                <span>One-line description of what this card links to.</span>
+                <a href="#">Visit -&gt;</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>CTA button</h3>
+        <div class="canvas-preview actions">
+          <a class="canvas-button navy" href="#">Submit your response &rsaquo;</a>
+          <a class="canvas-button gold" href="#">Submit your response &rsaquo;</a>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Data table</h3>
+        <div class="canvas-preview">
+          <table class="canvas-table">
+            <thead>
+              <tr><th scope="col">Column A</th><th scope="col">Column B</th><th scope="col">Column C</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Row 1</td><td>Value</td><td>Value</td></tr>
+              <tr><td>Row 2</td><td>Value</td><td>Value</td></tr>
+              <tr><td>Row 3</td><td>Value</td><td>Value</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Instructor card</h3>
+        <div class="canvas-preview stack">
+          <div class="instructor-card">
+            <div class="avatar" aria-hidden="true">IN</div>
+            <div>
+              <p>INSTRUCTOR</p>
+              <h3>Dr. Instructor Name</h3>
+              <em>Course title and section</em>
+              <span><strong>Email:</strong> <a href="mailto:email@school.edu">email@school.edu</a></span>
+              <span><strong>Office:</strong> Building, Room 123</span>
+            </div>
+          </div>
+          <div class="canvas-callout highlight" role="note">
+            <p><strong>Best way to reach me:</strong> Email - I reply within 24 business hours.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Two-column layout</h3>
+        <div class="canvas-preview">
+          <div class="two-up">
+            <div>
+              <h3>Left column</h3>
+              <p>Body content for the left side. Keep it tight - one idea per column works best.</p>
+            </div>
+            <div>
+              <h3>Right column</h3>
+              <p>Body content for the right side. Pair with the left, or use for related-but-separate ideas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Outcomes list</h3>
+        <div class="canvas-preview">
+          <div class="outcomes">
+            <h3>What you'll get out of this section</h3>
+            <ol>
+              <li><span>1</span><p><strong>Outcome one.</strong> Short action-oriented description.</p></li>
+              <li><span>2</span><p><strong>Outcome two.</strong> Short action-oriented description.</p></li>
+              <li><span>3</span><p><strong>Outcome three.</strong> Short action-oriented description.</p></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Pull quote</h3>
+        <div class="canvas-preview">
+          <blockquote class="canvas-quote">
+            "A short, memorable sentence that frames the section or sets the tone."
+            <footer>- Attribution</footer>
+          </blockquote>
+        </div>
+      </div>
+
+      <div class="component">
+        <h3>Unit outline</h3>
+        <div class="canvas-preview stack">
+          <div class="canvas-callout highlight" role="note">
+            <p class="callout-label">ALIGNS WITH COURSE LEARNING OUTCOME</p>
+            <p>Illustrate the role of the computer for personal and professional uses.</p>
+          </div>
+          <table class="canvas-table">
+            <caption>At the End of This Unit You Will Be Able To</caption>
+            <thead><tr><th scope="col">#</th><th scope="col">Learning objective</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">1</th><td>Discuss the history and evolution of computers.</td></tr>
+              <tr><th scope="row">2</th><td>Describe common computer parameters and computer circuits.</td></tr>
+              <tr><th scope="row">3</th><td>Define and demonstrate digital literacy.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="library-section">
+      <div class="section-head"><span class="idx">04</span><h2>Canvas caveats</h2></div>
+      <ul class="checklist">
+        <li>Keep components self-contained; Canvas usually strips shared style blocks and media queries.</li>
+        <li>Use inline styles and responsive grid values such as <code>repeat(auto-fit, minmax(...))</code>.</li>
+        <li>Do not rely on scripts, forms, pseudo-elements, or links wrapped around block-level cards.</li>
+        <li>Keep table captions and <code>scope</code> attributes for screen readers.</li>
+        <li>Upload images to Canvas Files first, then replace image URLs in copied HTML.</li>
+      </ul>
+    </section>
+
+    <p class="back-link"><a href="/lab/">Back to Lab</a></p>
+  </article>
+</Base>
+
+<style>
+  .library {
+    --canvas-primary: #273a80;
+    --canvas-secondary: #406daa;
+    --canvas-warning: #e12526;
+    --canvas-highlight: #fdb71a;
+    --canvas-primary-tint: #eef2f9;
+    --canvas-warning-tint: #fdecec;
+    --canvas-highlight-tint: #fff8e6;
+    max-width: 58rem;
+    margin: 0 auto;
+    padding: calc(var(--u) * 2) var(--u) calc(var(--u) * 3);
+  }
+  .source-note { font-family: var(--mono); font-size: .85rem; color: var(--mist); }
+  .library-section { margin-top: calc(var(--u) * 2.5); }
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: .75rem;
+    margin-top: var(--u);
+  }
+  .token {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    gap: .75rem;
+    align-items: center;
+    border: 1px solid var(--line);
+    padding: .75rem;
+    background: white;
+  }
+  .swatch {
+    display: block;
+    width: 3.25rem;
+    aspect-ratio: 1;
+    border: 1px solid var(--line-heavy);
+  }
+  .token strong, .token code, .token small { display: block; }
+  .token code { margin: .15rem 0; }
+  .token small, .component-index small { color: var(--mist); }
+  .component-index {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1px;
+    border: 1px solid var(--line);
+    background: var(--line);
+    margin-top: var(--u);
+  }
+  .component-index div {
+    display: grid;
+    gap: .2rem;
+    padding: .9rem;
+    background: var(--paper);
+  }
+  .component { border-top: 1px solid var(--line); padding-top: var(--u); margin-top: var(--u); }
+  .component h3 {
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .canvas-preview {
+    border: 1px solid var(--line);
+    background: white;
+    padding: 1.25rem;
+    overflow-x: auto;
+  }
+  .stack { display: grid; gap: 1rem; }
+  .actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+  .canvas-section-heading {
+    color: var(--canvas-primary);
+    border-bottom: 3px solid var(--canvas-highlight);
+    padding-bottom: 6px;
+    margin: 0;
+  }
+  .canvas-callout {
+    border-left: 4px solid var(--canvas-secondary);
+    background: var(--canvas-primary-tint);
+    padding: 14px 18px;
+    border-radius: 4px;
+  }
+  .canvas-callout p { margin: 0; color: var(--canvas-primary); }
+  .canvas-callout.warning { border-left-color: var(--canvas-warning); background: var(--canvas-warning-tint); }
+  .canvas-callout.warning p { color: #7a1416; }
+  .canvas-callout.highlight { border-left-color: var(--canvas-highlight); background: var(--canvas-highlight-tint); }
+  .callout-label {
+    font-family: "Courier New", monospace;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: .85em;
+    margin-bottom: 6px !important;
+  }
+  .canvas-hero {
+    min-height: 15rem;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background:
+      linear-gradient(90deg, rgba(39,58,128,.78), rgba(39,58,128,.24), rgba(39,58,128,0)),
+      linear-gradient(135deg, #9fb5d6, #d7c079 52%, #335c7d);
+  }
+  .canvas-hero div { max-width: 28rem; padding: 2rem; color: white; }
+  .canvas-hero p {
+    margin: 0 0 .25rem;
+    color: var(--canvas-highlight);
+    font-family: "Courier New", monospace;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: .85em;
+  }
+  .canvas-hero h2 { color: white; margin: 0; }
+  .canvas-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 14px;
+  }
+  .canvas-card {
+    background: var(--canvas-primary-tint);
+    border-top: 4px solid var(--canvas-primary);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .canvas-card p {
+    margin: 0 0 6px;
+    color: var(--canvas-primary);
+    font-family: "Courier New", monospace;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: .75em;
+  }
+  .canvas-card h4 { margin: 0 0 8px; color: var(--canvas-primary); }
+  .canvas-card span { display: block; margin-bottom: 12px; }
+  .canvas-card a, .instructor-card a { color: var(--canvas-primary); font-weight: 600; }
+  .canvas-button {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .canvas-button.navy { background: var(--canvas-primary); color: white; }
+  .canvas-button.gold { background: var(--canvas-highlight); color: var(--canvas-primary); }
+  .canvas-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+  .canvas-table caption {
+    caption-side: top;
+    text-align: left;
+    color: var(--canvas-primary);
+    font-weight: 700;
+    font-size: 1.1em;
+    padding: 0 0 8px;
+  }
+  .canvas-table th, .canvas-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid #cdd6e8;
+  }
+  .canvas-table thead tr { background: var(--canvas-primary); color: white; }
+  .canvas-table thead th { border-color: var(--canvas-primary); }
+  .canvas-table tbody tr:nth-child(even) { background: var(--canvas-primary-tint); }
+  .instructor-card {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    background: var(--canvas-primary-tint);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: var(--canvas-primary);
+    color: white;
+    font-family: var(--mono);
+    font-weight: 700;
+  }
+  .instructor-card p {
+    margin: 0 0 4px;
+    color: var(--canvas-primary);
+    font-family: "Courier New", monospace;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: .75em;
+  }
+  .instructor-card h3 { margin: 0 0 4px; color: var(--canvas-primary); }
+  .instructor-card em, .instructor-card span { display: block; margin-bottom: 6px; }
+  .two-up {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 24px;
+  }
+  .two-up h3 { color: var(--canvas-primary); margin: 0 0 8px; }
+  .two-up p { margin: 0; }
+  .outcomes {
+    background: var(--canvas-primary-tint);
+    border-radius: 8px;
+    padding: 18px 22px;
+  }
+  .outcomes h3 { margin: 0 0 12px; color: var(--canvas-primary); }
+  .outcomes ol { margin: 0; padding-left: 0; list-style: none; }
+  .outcomes li { display: flex; gap: 12px; margin-bottom: 10px; }
+  .outcomes li:last-child { margin-bottom: 0; }
+  .outcomes span {
+    flex-shrink: 0;
+    background: var(--canvas-primary);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .outcomes p { margin: 0; }
+  .canvas-quote {
+    border-left: 4px solid var(--canvas-primary);
+    padding: 8px 20px;
+    margin: 0;
+    color: var(--canvas-primary);
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 1.25em;
+    line-height: 1.4;
+  }
+  .canvas-quote footer {
+    margin-top: 8px;
+    font-size: .75em;
+    font-style: normal;
+    color: var(--canvas-secondary);
+  }
+  .checklist li { margin-bottom: .5rem; }
+  .back-link { margin-top: calc(var(--u) * 2); }
+  @media (max-width: 40rem) {
+    .library { padding-top: calc(var(--u) * 1.5); }
+    .canvas-preview { padding: .9rem; }
+    .instructor-card { display: block; }
+    .avatar { margin-bottom: 1rem; }
+  }
+</style>

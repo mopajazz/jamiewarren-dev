@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.order);
+---
+<Base title="Lab — Jamie Warren">
+  <section class="band">
+    <div class="wrap">
+      <p class="eyebrow">The Lab // tools, courses, experiments</p>
+      <h1>Built for the practice of it</h1>
+      <p class="lede">Some ship to students; some exist because building them was the point.</p>
+      <ul class="rows">
+        {lab.map((l, i) => (
+          <li>
+            {l.data.link ? (
+              <a class="row" href={l.data.link}>
+                <span class="idx">{String(i+1).padStart(2,'0')}</span>
+                <span>
+                  <span class="row-title">{l.data.title}</span>
+                  <p class="row-summary">{l.data.blurb}</p>
+                  <p class="row-meta">{l.data.tags.join(' / ')}</p>
+                </span>
+              </a>
+            ) : (
+              <div class="row">
+                <span class="idx">{String(i+1).padStart(2,'0')}</span>
+                <span>
+                  <span class="row-title">{l.data.title}</span>
+                  <p class="row-summary">{l.data.blurb}</p>
+                  <p class="row-meta">{l.data.tags.join(' / ')}</p>
+                </span>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

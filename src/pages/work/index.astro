@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const work = (await getCollection('work')).sort((a,b) => a.data.order - b.data.order);
+---
+<Base title="Work — Jamie Warren">
+  <section class="band">
+    <div class="wrap">
+      <p class="eyebrow">Case studies // problem &gt; decision &gt; verified result</p>
+      <h1>Work</h1>
+      <p class="lede">Six projects. Live artifacts linked where they exist.</p>
+      <ul class="rows">
+        {work.map((w, i) => (
+          <li>
+            <a class="row" href={`/work/${w.slug}/`}>
+              <span class="idx">{String(i+1).padStart(2,'0')}</span>
+              <span>
+                <span class="row-title">{w.data.title}</span>
+                <p class="row-summary">{w.data.summary}</p>
+                <p class="row-meta">{w.data.tools.join(' / ')}</p>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
