@@ -13,6 +13,12 @@ const { Content } = await entry.render();
     <p class="eyebrow">Case study // Jamie Warren</p>
     <h1>{entry.data.title}</h1>
     {entry.data.link && <p><a href={entry.data.link}>View the live artifact</a></p>}
+    {entry.data.media && (
+      <figure class="artifact-figure">
+        <img src={entry.data.media.src} alt={entry.data.media.alt} loading="lazy" decoding="async" />
+        {entry.data.media.caption && <figcaption>{entry.data.media.caption}</figcaption>}
+      </figure>
+    )}
     <Content />
     <p style="margin-top:3rem;"><a href="/work/">← All case studies</a></p>
   </article>

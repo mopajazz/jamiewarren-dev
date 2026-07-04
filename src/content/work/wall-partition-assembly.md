@@ -4,6 +4,10 @@ summary: "A Storyline labeling interaction for construction students — two yea
 order: 5
 tools: ["Storyline 360"]
 link: "https://360.articulate.com/review/content/79b68207-44f5-47f7-a442-1ee10f61b03f/review"
+media:
+  src: "/artifacts/wall-partition-assembly.png"
+  alt: "Wall and partition assembly Storyline drag-and-drop interaction with construction labels and submit button"
+  caption: "Storyline drag-and-drop labeling interaction for construction students"
 ---
 **An instructor teaching blueprint reading and construction came to the Teaching
 & Learning Center wanting interactives for his course. This Storyline
@@ -16,8 +20,8 @@ submit — anchored that commission.**
 |---|---|
 | **Role** | Designer and developer; commissioned build for CTE faculty |
 | **Context** | Blueprint reading & construction course, Blue Ridge Community College; delivered alongside a set of H5P activities for the same instructor |
-| **Tools** | Articulate Storyline 360 — drag-and-drop labeling with submit-gated validation; custom background composition |
 | **Timeline** | Built and published February 2024 |
+| **Tools** | Articulate Storyline 360 — drag-and-drop labeling with submit-gated validation; custom background composition |
 | **Artifact** | [View the interaction](https://360.articulate.com/review/content/79b68207-44f5-47f7-a442-1ee10f61b03f/review) |
 
 ### The Problem

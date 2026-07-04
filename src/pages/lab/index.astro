@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.order);
 ---
-<Base title="Lab — Jamie Warren">
+<Base title="Lab — Jamie Warren" description="Live experiments, course artifacts, component systems, web audio tools, and interactive learning prototypes from Jamie Warren.">
   <section class="band">
     <div class="wrap">
       <p class="eyebrow">The Lab // tools, courses, experiments</p>
@@ -19,7 +19,9 @@ const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.ord
                   <span class="row-title">{l.data.title}</span>
                   <p class="row-summary">{l.data.blurb}</p>
                   <p class="row-meta">{l.data.tags.join(' / ')}</p>
+                  {l.data.artifactNote && <p class="row-status">{l.data.artifactNote}</p>}
                 </span>
+                {l.data.media && <img class="row-media" src={l.data.media.src} alt={l.data.media.alt} loading="lazy" decoding="async" />}
               </a>
             ) : (
               <div class="row">
@@ -28,7 +30,9 @@ const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.ord
                   <span class="row-title">{l.data.title}</span>
                   <p class="row-summary">{l.data.blurb}</p>
                   <p class="row-meta">{l.data.tags.join(' / ')}</p>
+                  {l.data.artifactNote && <p class="row-status">{l.data.artifactNote}</p>}
                 </span>
+                {l.data.media && <img class="row-media" src={l.data.media.src} alt={l.data.media.alt} loading="lazy" decoding="async" />}
               </div>
             )}
           </li>

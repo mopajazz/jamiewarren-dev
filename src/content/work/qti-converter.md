@@ -15,8 +15,8 @@ of faculty-built quiz banks. The commercial answer was "rebuild them by hand."**
 |---|---|
 | **Role** | Sole developer/designer |
 | **Context** | College-wide, state-mandated Moodle→Canvas migration, Blue Ridge Community College, August 2026 go-live |
-| **Tools** | Python, Moodle XML, QTI 1.2, Canvas import validation |
 | **Timeline** | Built and hardened iteratively across production sprints |
+| **Tools** | Python, Moodle XML, QTI 1.2, Canvas import validation |
 | **Artifact** | [Live converter](https://xml-qti-converter.vercel.app/) — upload a Moodle XML export, choose QTI 1.2/2.1 and packaging, convert |
 
 ### The Problem

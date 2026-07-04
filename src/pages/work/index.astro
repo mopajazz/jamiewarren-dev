@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 const work = (await getCollection('work')).sort((a,b) => a.data.order - b.data.order);
 ---
-<Base title="Work — Jamie Warren">
+<Base title="Work — Jamie Warren" description="Case studies in Canvas migration, SCORM lesson conversion, QTI tooling, Storyline interactions, and AI-assisted study tools.">
   <section class="band">
     <div class="wrap">
       <p class="eyebrow">Case studies // problem &gt; decision &gt; verified result</p>
@@ -19,6 +19,7 @@ const work = (await getCollection('work')).sort((a,b) => a.data.order - b.data.o
                 <p class="row-summary">{w.data.summary}</p>
                 <p class="row-meta">{w.data.tools.join(' / ')}</p>
               </span>
+              {w.data.media && <img class="row-media" src={w.data.media.src} alt={w.data.media.alt} loading="lazy" decoding="async" />}
             </a>
           </li>
         ))}

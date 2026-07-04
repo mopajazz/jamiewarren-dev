@@ -16,9 +16,9 @@ scheduled to die with the old platform.**
 |---|---|
 | **Role** | Sole designer/developer; SME partnership with course faculty |
 | **Context** | ACA-122 (College Transfer Success), Blue Ridge Community College — part of a college-wide, state-mandated Moodle→Canvas migration, August 2026 go-live |
-| **Tools** | HTML/CSS/JavaScript, SCORM 1.2 API, Canvas LMS, reusable component library, AI-assisted authoring workflow |
 | **Timeline** | Summer 2026 build cycle, alongside full production load |
-| **Live artifact** | [Unit 1: Welcome to Blue Ridge — live lesson](https://aca-scorm.vercel.app/) (same file as the SCORM package; tracking no-ops gracefully on the open web) |
+| **Tools** | HTML/CSS/JavaScript, SCORM 1.2 API, Canvas LMS, reusable component library, AI-assisted authoring workflow |
+| **Artifact** | [Unit 1: Welcome to Blue Ridge — live lesson](https://aca-scorm.vercel.app/) (same file as the SCORM package; tracking no-ops gracefully on the open web) |
 
 ### The Problem
 

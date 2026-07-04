@@ -8,6 +8,11 @@ const work = defineCollection({
     order: z.number(),
     tools: z.array(z.string()).default([]),
     link: z.string().optional(),
+    media: z.object({
+      src: z.string(),
+      alt: z.string(),
+      caption: z.string().optional(),
+    }).optional(),
     featured: z.boolean().default(false),
   }),
 });
@@ -18,6 +23,12 @@ const lab = defineCollection({
     title: z.string(),
     blurb: z.string(),
     link: z.string().optional(),
+    artifactNote: z.string().optional(),
+    media: z.object({
+      src: z.string(),
+      alt: z.string(),
+      caption: z.string().optional(),
+    }).optional(),
     tags: z.array(z.string()).default([]),
     order: z.number().default(99),
   }),

@@ -15,8 +15,9 @@ or come out better than we went in.**
 |---|---|
 | **Role** | Core builder — I designed and built the course-rebuild machinery: conversion pipelines, templates, and the component system. (The transition itself was led by our Canvas project lead; this page covers my slice, precisely.) |
 | **Context** | College-wide Moodle/OpenLMS → Canvas migration, Blue Ridge Community College |
-| **Deadline** | August 17, 2026 go-live — fixed, external, non-negotiable |
+| **Timeline** | August 17, 2026 go-live - fixed, external, non-negotiable |
 | **Tools** | Canvas LMS, SCORM 1.2, HTML/CSS/JS, Python, H5P, Articulate Rise/Storyline |
+| **Artifact** | Related live artifacts linked through the lesson-conversion, QTI-converter, and component-library entries |
 
 ### The Problem
 
