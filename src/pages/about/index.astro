@@ -5,10 +5,38 @@ import Base from '../../layouts/Base.astro';
   <article class="study">
     <p class="eyebrow">About</p>
     <h1>The long way here</h1>
+    <figure class="about-photo">
+      <img src="/jamie-warren-about.jpg" alt="Jamie Warren" />
+    </figure>
     <p>I've been a trombonist for thirty years. I earned a master's in music at the University of Tennessee, taught jazz improvisation for the better part of a decade, spent five years in IT — helpdesk through Canvas administration — and landed in instructional design, where all of it turned out to be relevant.</p>
     <p>Teaching improvisation settled the conviction that runs through everything I build: people don't learn from content. They learn from well-sequenced experiences. A course, a study tool, a SCORM lesson — each one is an attempt to sequence a hard skill the way a good teacher would, at a scale no single classroom reaches.</p>
     <p>The IT years contribute the other half. When an interactive misbehaves inside an LMS, I don't file a ticket. I open the console. Most of what's in the <a href="/work/">Work</a> section exists because something needed to survive a migration, a sanitizer, or a semester of unattended use — and the pipelines that made that possible turned out to be as interesting as the lessons themselves.</p>
     <p>I work at a community college in western North Carolina, building for faculty and students who deserve better than the path of least resistance. Off the clock: barbecue taken seriously, and a free jazz-language OER called <a href="https://jazzinteractive.org">Jazz Interactive</a> that I've been building for years because nobody else was going to.</p>
     <p><a href="/Jamie-Warren-Resume.pdf">Resume (PDF)</a> · <a href="mailto:mopajazz@gmail.com">mopajazz@gmail.com</a> · <a href="https://www.linkedin.com/in/jamie-warren-bb9b2a171/">LinkedIn</a></p>
+    <p><a href="https://ixdf.org/members/jamie-warren?r=jamie-warren">IxDF public profile</a></p>
   </article>
 </Base>
+
+<style>
+  .about-photo {
+    margin: 0 0 calc(var(--u) * 1.5);
+    border-top: 2px solid var(--line-heavy);
+    border-bottom: 1px solid var(--line);
+    padding: var(--u) 0;
+  }
+  .about-photo img {
+    display: block;
+    width: min(18rem, 100%);
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--line);
+  }
+  @media (min-width: 48rem) {
+    .about-photo {
+      float: right;
+      width: 18rem;
+      margin: 0 0 var(--u) calc(var(--u) * 1.5);
+      padding-top: calc(var(--u) / 2);
+    }
+  }
+</style>
