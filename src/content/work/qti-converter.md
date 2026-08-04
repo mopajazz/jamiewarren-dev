@@ -2,6 +2,7 @@
 title: "Moodle XML → QTI Converter"
 summary: "Canvas accepted the quiz files, then silently dropped questions. This is the tool that fixed it."
 order: 3
+year: 2026
 tools: ["Python", "Moodle XML", "QTI 1.2"]
 link: "https://xml-qti-converter.vercel.app/"
 featured: true

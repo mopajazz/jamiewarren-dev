@@ -81,6 +81,11 @@ a.row:hover .idx { color: var(--ink); }
 a.row .row-title::after { content: " \2192"; color: var(--brass); }
 .row-summary { margin: .35rem 0 0; color: var(--mist); font-size: .95rem; max-width: 58ch; }
 .row-meta { margin: .6rem 0 0; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--brass-deep); }
+.row-year { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+/* Separator lives on the tools span so it can never dangle when a year
+   stands alone (or when an entry carries no tools/tags). The leading space
+   comes from the markup's own whitespace, so none is repeated here. */
+.row-year + .row-tools::before { content: "· "; color: var(--mist); font-weight: 400; }
 .row-status { display: inline-block; margin: .65rem 0 0; padding: .2rem .45rem; border: 1px solid var(--line); color: var(--mist); font-family: var(--mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
 .row-media { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border: 1px solid var(--line); background: var(--panel); align-self: center; }
 @media (max-width: 40rem) { .row { grid-template-columns: 1fr; } .idx { display: none; } .row-media { margin-top: calc(var(--u) / 2); } }

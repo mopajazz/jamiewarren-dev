@@ -2,6 +2,7 @@
 title: "The Moodle → Canvas Migration"
 summary: "A state-bid contract chose the LMS. The machinery I built decided what survived the move."
 order: 1
+year: 2026
 tools: ["Canvas", "SCORM 1.2", "Python", "H5P"]
 featured: true
 ---

@@ -25,7 +25,10 @@ const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.ord
               <span>
                 <span class="row-title">{w.data.title}</span>
                 <p class="row-summary">{w.data.summary}</p>
-                <p class="row-meta">{w.data.tools.join(' / ')}</p>
+                <p class="row-meta">
+                  {w.data.year && <span class="row-year">{w.data.year}</span>}
+                  {w.data.tools.length > 0 && <span class="row-tools">{w.data.tools.join(' / ')}</span>}
+                </p>
               </span>
               {w.data.media && <img class="row-media" src={w.data.media.src} alt={w.data.media.alt} loading="lazy" decoding="async" />}
             </a>
@@ -48,7 +51,10 @@ const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.ord
                 <span>
                   <span class="row-title">{l.data.title}</span>
                   <p class="row-summary">{l.data.blurb}</p>
-                  <p class="row-meta">{l.data.tags.join(' / ')}</p>
+                  <p class="row-meta">
+                    {l.data.year && <span class="row-year">{l.data.year}</span>}
+                    {l.data.tags.length > 0 && <span class="row-tools">{l.data.tags.join(' / ')}</span>}
+                  </p>
                   {l.data.artifactNote && <p class="row-status">{l.data.artifactNote}</p>}
                 </span>
                 {l.data.media && <img class="row-media" src={l.data.media.src} alt={l.data.media.alt} loading="lazy" decoding="async" />}
@@ -59,7 +65,10 @@ const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.ord
                 <span>
                   <span class="row-title">{l.data.title}</span>
                   <p class="row-summary">{l.data.blurb}</p>
-                  <p class="row-meta">{l.data.tags.join(' / ')}</p>
+                  <p class="row-meta">
+                    {l.data.year && <span class="row-year">{l.data.year}</span>}
+                    {l.data.tags.length > 0 && <span class="row-tools">{l.data.tags.join(' / ')}</span>}
+                  </p>
                   {l.data.artifactNote && <p class="row-status">{l.data.artifactNote}</p>}
                 </span>
                 {l.data.media && <img class="row-media" src={l.data.media.src} alt={l.data.media.alt} loading="lazy" decoding="async" />}
