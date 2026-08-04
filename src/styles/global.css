@@ -88,7 +88,15 @@ a.row .row-title::after { content: " \2192"; color: var(--brass); }
 .row-year + .row-tools::before { content: "· "; color: var(--mist); font-weight: 400; }
 .row-status { display: inline-block; margin: .65rem 0 0; padding: .2rem .45rem; border: 1px solid var(--line); color: var(--mist); font-family: var(--mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
 .row-media { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border: 1px solid var(--line); background: var(--panel); align-self: center; }
-@media (max-width: 40rem) { .row { grid-template-columns: 1fr; } .idx { display: none; } .row-media { margin-top: calc(var(--u) / 2); } }
+/* The :not(:has()) rule above scores (0,2,0), so a bare `.row` here would lose
+   to it and leave the 3.5rem index column in place. With .idx hidden, the
+   content span then falls into that 56px column and wraps one word per line.
+   Matching the selector shape keeps the single-column override winning. */
+@media (max-width: 40rem) {
+  .row, .row:not(:has(.row-media)) { grid-template-columns: 1fr; }
+  .idx { display: none; }
+  .row-media { margin-top: calc(var(--u) / 2); }
+}
 
 /* ---- case study article: datasheet ---- */
 article.study { max-width: 46rem; margin: 0 auto; padding: calc(var(--u) * 2) var(--u) calc(var(--u) * 3); }
