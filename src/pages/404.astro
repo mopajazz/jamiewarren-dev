@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+---
+<Base
+  title="Page not found — Jamie Warren"
+  description="That page doesn't exist. Links to the case studies, the Lab, and the about page."
+>
+  <section class="band">
+    <div class="wrap">
+      <p class="eyebrow">Error 404 // no route matched</p>
+      <h1>That page isn't here.</h1>
+      <p class="lede">
+        The address didn't match anything on this site. It may have been renamed, or the
+        link that sent you here may be out of date.
+      </p>
+
+      <div class="section-head" style="margin-top:3rem;">
+        <span class="idx">01</span><h2>Try these</h2>
+      </div>
+      <ul class="rows">
+        {work.map((w, i) => (
+          <li>
+            <a class="row" href={`/work/${w.slug}/`}>
+              <span class="idx">{String(i + 1).padStart(2, '0')}</span>
+              <span>
+                <span class="row-title">{w.data.title}</span>
+                <p class="row-summary">{w.data.summary}</p>
+                <p class="row-meta">{w.data.tools.join(' / ')}</p>
+              </span>
+            </a>
+          </li>
+        ))}
+        <li>
+          <a class="row" href="/lab/">
+            <span class="idx">04</span>
+            <span>
+              <span class="row-title">The Lab</span>
+              <p class="row-summary">Tools, courses, and experiments — some shipped to students, some built for the practice of it.</p>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="row" href="/about/">
+            <span class="idx">05</span>
+            <span>
+              <span class="row-title">About</span>
+              <p class="row-summary">Trombone, IT, and instructional design — how the three turned out to be the same job.</p>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</Base>

@@ -1,4 +1,4 @@
-# mopajazz.com
+# jamiewarren.dev
 
 Personal portfolio — Astro static site, deployed on Vercel.
 
@@ -8,7 +8,9 @@ Personal portfolio — Astro static site, deployed on Vercel.
 
 ## Deploy
 Push to GitHub → import in Vercel. Framework preset: Astro. No config needed.
-Point mopajazz.com at the Vercel project when ready.
+Point jamiewarren.dev at the Vercel project when ready. The canonical domain is
+set in `astro.config.mjs` (`site`) — canonical tags, Open Graph URLs, and the
+sitemap all derive from it, so change it there if the domain ever moves.
 
 ## Where things live
 - `src/content/work/*.md` — case studies. **To add one: drop in a markdown

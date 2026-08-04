@@ -8,7 +8,12 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 ---
-<Base title={`${entry.data.title} — Jamie Warren`} description={entry.data.summary}>
+<Base
+  title={`${entry.data.title} — Jamie Warren`}
+  description={entry.data.summary}
+  image={entry.data.media?.src ?? '/og-default.png'}
+  type="article"
+>
   <article class="study">
     <p class="eyebrow">Case study // Jamie Warren</p>
     <h1>{entry.data.title}</h1>
