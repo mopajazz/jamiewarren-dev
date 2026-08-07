@@ -5,6 +5,7 @@
    Palette: OKLCH, neutrals tinted toward brass (hue ~80)
    ============================================================ */
 :root {
+  color-scheme: light dark;
   --ink:        oklch(24% 0.015 80);   /* primary text */
   --mist:       oklch(45% 0.022 80);   /* secondary text, ≥7:1 on paper */
   --paper:      oklch(97.5% 0.006 85); /* page ground, brass-tinted */
@@ -17,6 +18,21 @@
   --sans: "Archivo", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --u: 1.5rem; /* 24px rhythm unit */
+}
+/* Same spec-sheet system, same hue family — values inverted for a dark
+   ground rather than swapped for a different palette. Ratios checked
+   against WCAG AA (4.5:1 text, 3:1 large text/UI); see PR for the numbers. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink:        oklch(93% 0.012 82);
+    --mist:       oklch(74% 0.022 80);
+    --paper:      oklch(16% 0.014 78);
+    --panel:      oklch(21% 0.017 78);
+    --line:       oklch(32% 0.02 78);
+    --line-heavy: oklch(88% 0.02 80);
+    --brass:      oklch(72% 0.13 78);
+    --brass-deep: oklch(80% 0.12 78);
+  }
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
