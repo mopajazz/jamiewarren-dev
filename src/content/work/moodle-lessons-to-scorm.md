@@ -2,6 +2,7 @@
 title: "Moodle Lessons → SCORM"
 summary: "Canvas has no Lesson activity. A shared engine carried ACA-122's lessons across — upgraded."
 order: 2
+year: 2026
 tools: ["HTML/CSS/JS", "SCORM 1.2", "Canvas"]
 link: "https://aca-scorm.vercel.app/"
 featured: true

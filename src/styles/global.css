@@ -1,10 +1,11 @@
 /* ============================================================
-   mopajazz.com — spec-sheet design system
+   jamiewarren.dev — spec-sheet design system
    Type: Archivo (grotesque) + IBM Plex Mono (engineering meta)
    Rhythm: 16px/1.5 = 24px base unit; spacing in multiples
    Palette: OKLCH, neutrals tinted toward brass (hue ~80)
    ============================================================ */
 :root {
+  color-scheme: light dark;
   --ink:        oklch(24% 0.015 80);   /* primary text */
   --mist:       oklch(45% 0.022 80);   /* secondary text, ≥7:1 on paper */
   --paper:      oklch(97.5% 0.006 85); /* page ground, brass-tinted */
@@ -17,6 +18,21 @@
   --sans: "Archivo", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --u: 1.5rem; /* 24px rhythm unit */
+}
+/* Same spec-sheet system, same hue family — values inverted for a dark
+   ground rather than swapped for a different palette. Ratios checked
+   against WCAG AA (4.5:1 text, 3:1 large text/UI); see PR for the numbers. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink:        oklch(93% 0.012 82);
+    --mist:       oklch(74% 0.022 80);
+    --paper:      oklch(16% 0.014 78);
+    --panel:      oklch(21% 0.017 78);
+    --line:       oklch(32% 0.02 78);
+    --line-heavy: oklch(88% 0.02 80);
+    --brass:      oklch(72% 0.13 78);
+    --brass-deep: oklch(80% 0.12 78);
+  }
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -81,9 +97,22 @@ a.row:hover .idx { color: var(--ink); }
 a.row .row-title::after { content: " \2192"; color: var(--brass); }
 .row-summary { margin: .35rem 0 0; color: var(--mist); font-size: .95rem; max-width: 58ch; }
 .row-meta { margin: .6rem 0 0; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--brass-deep); }
+.row-year { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+/* Separator lives on the tools span so it can never dangle when a year
+   stands alone (or when an entry carries no tools/tags). The leading space
+   comes from the markup's own whitespace, so none is repeated here. */
+.row-year + .row-tools::before { content: "· "; color: var(--mist); font-weight: 400; }
 .row-status { display: inline-block; margin: .65rem 0 0; padding: .2rem .45rem; border: 1px solid var(--line); color: var(--mist); font-family: var(--mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
 .row-media { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border: 1px solid var(--line); background: var(--panel); align-self: center; }
-@media (max-width: 40rem) { .row { grid-template-columns: 1fr; } .idx { display: none; } .row-media { margin-top: calc(var(--u) / 2); } }
+/* The :not(:has()) rule above scores (0,2,0), so a bare `.row` here would lose
+   to it and leave the 3.5rem index column in place. With .idx hidden, the
+   content span then falls into that 56px column and wraps one word per line.
+   Matching the selector shape keeps the single-column override winning. */
+@media (max-width: 40rem) {
+  .row, .row:not(:has(.row-media)) { grid-template-columns: 1fr; }
+  .idx { display: none; }
+  .row-media { margin-top: calc(var(--u) / 2); }
+}
 
 /* ---- case study article: datasheet ---- */
 article.study { max-width: 46rem; margin: 0 auto; padding: calc(var(--u) * 2) var(--u) calc(var(--u) * 3); }

@@ -2,6 +2,7 @@
 title: "Wall & Partition Assembly"
 summary: "A Storyline labeling interaction for construction students — two years in active use."
 order: 5
+year: 2024
 tools: ["Storyline 360"]
 link: "https://360.articulate.com/review/content/79b68207-44f5-47f7-a442-1ee10f61b03f/review"
 media:

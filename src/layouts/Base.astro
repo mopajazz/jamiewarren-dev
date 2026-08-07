@@ -1,12 +1,39 @@
 ---
 import '../styles/global.css';
-const { title = 'Jamie Warren', description = 'Instructional designer and developer — SCORM pipelines, Canvas rebuilds, and interactive learning tools.' } = Astro.props;
+const {
+  title = 'Jamie Warren',
+  description = 'Instructional designer and developer — SCORM pipelines, Canvas rebuilds, and interactive learning tools.',
+  image = '/og-default.png',
+  type = 'website',
+} = Astro.props;
 const path = Astro.url.pathname;
+const canonical = new URL(path, Astro.site);
+const ogImage = new URL(image, Astro.site);
+// Dimensions are only declared for the generated card, whose size we control.
+// Per-page artifact images vary, and wrong hints cause bad preview crops.
+const isDefaultCard = image === '/og-default.png';
 const nav = [
   { href: '/work/', label: 'Work' },
   { href: '/lab/', label: 'Lab' },
   { href: '/about/', label: 'About' },
 ];
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Jamie Warren',
+  url: Astro.site?.href,
+  image: new URL('/jamie-warren-about.jpg', Astro.site).href,
+  jobTitle: 'Instructional Designer & Learning Technologist',
+  description,
+  email: 'mailto:mopajazz@gmail.com',
+  address: { '@type': 'PostalAddress', addressLocality: 'Brevard', addressRegion: 'NC', addressCountry: 'US' },
+  knowsAbout: ['Instructional design', 'SCORM', 'Canvas LMS', 'QTI', 'Articulate Storyline', 'Rise 360', 'Web audio', 'Accessibility'],
+  sameAs: [
+    'https://www.linkedin.com/in/jamie-warren-bb9b2a171/',
+    'https://github.com/mopajazz',
+    'https://jazzinteractive.org',
+  ],
+};
 ---
 <!doctype html>
 <html lang="en">
@@ -15,9 +42,32 @@ const nav = [
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  <link rel="canonical" href={canonical.href} />
+  <meta name="theme-color" content="#231f17" />
+
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <meta property="og:type" content={type} />
+  <meta property="og:site_name" content="Jamie Warren" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical.href} />
+  <meta property="og:image" content={ogImage.href} />
+  {isDefaultCard && <meta property="og:image:width" content="1200" />}
+  {isDefaultCard && <meta property="og:image:height" content="630" />}
+  <meta property="og:locale" content="en_US" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage.href} />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="application/ld+json" set:html={JSON.stringify(person)} />
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
