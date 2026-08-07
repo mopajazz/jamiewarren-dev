@@ -18,21 +18,36 @@
   --sans: "Archivo", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --u: 1.5rem; /* 24px rhythm unit */
+
+  /* Dark values, single-sourced so the two application rules below (system
+     preference, and the header toggle's explicit override) can't drift
+     apart. Same hue family as the light set — inversions, not a different
+     palette. Ratios checked against WCAG AA (4.5:1 text, 3:1 large text/UI). */
+  --ink-dark:        oklch(93% 0.012 82);
+  --mist-dark:       oklch(74% 0.022 80);
+  --paper-dark:      oklch(16% 0.014 78);
+  --panel-dark:      oklch(21% 0.017 78);
+  --line-dark:       oklch(32% 0.02 78);
+  --line-heavy-dark: oklch(88% 0.02 80);
+  --brass-dark:      oklch(72% 0.13 78);
+  --brass-deep-dark: oklch(80% 0.12 78);
 }
-/* Same spec-sheet system, same hue family — values inverted for a dark
-   ground rather than swapped for a different palette. Ratios checked
-   against WCAG AA (4.5:1 text, 3:1 large text/UI); see PR for the numbers. */
+/* Applied twice: once for OS/browser preference, overridden by the header
+   toggle's explicit choice (persisted via localStorage, set as data-theme
+   on <html> by the inline script in Base.astro) whichever way it goes. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --ink:        oklch(93% 0.012 82);
-    --mist:       oklch(74% 0.022 80);
-    --paper:      oklch(16% 0.014 78);
-    --panel:      oklch(21% 0.017 78);
-    --line:       oklch(32% 0.02 78);
-    --line-heavy: oklch(88% 0.02 80);
-    --brass:      oklch(72% 0.13 78);
-    --brass-deep: oklch(80% 0.12 78);
+  :root:not([data-theme="light"]) {
+    --ink: var(--ink-dark); --mist: var(--mist-dark);
+    --paper: var(--paper-dark); --panel: var(--panel-dark);
+    --line: var(--line-dark); --line-heavy: var(--line-heavy-dark);
+    --brass: var(--brass-dark); --brass-deep: var(--brass-deep-dark);
   }
+}
+:root[data-theme="dark"] {
+  --ink: var(--ink-dark); --mist: var(--mist-dark);
+  --paper: var(--paper-dark); --panel: var(--panel-dark);
+  --line: var(--line-dark); --line-heavy: var(--line-heavy-dark);
+  --brass: var(--brass-dark); --brass-deep: var(--brass-deep-dark);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -65,10 +80,23 @@ header.site { border-bottom: 2px solid var(--line-heavy); }
 header.site .wrap { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem var(--u); min-height: 4rem; }
 .brand { font-family: var(--mono); font-weight: 600; font-size: 1rem; letter-spacing: .02em; color: var(--ink); text-decoration: none; padding: .75rem 0; }
 .brand:hover { color: var(--brass-deep); }
+.header-right { display: flex; align-items: center; gap: var(--u); }
 nav.main { display: flex; }
 nav.main a { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; color: var(--mist); padding: 1.35rem .9rem; border-bottom: 2px solid transparent; margin-bottom: -2px; }
 nav.main a:hover { color: var(--ink); border-bottom-color: var(--line); }
 nav.main a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--brass); }
+
+/* ---- theme toggle ---- */
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; padding: 0; border: 1px solid var(--line); background: transparent; color: var(--mist); cursor: pointer; transition: color 120ms ease, border-color 120ms ease; }
+.theme-toggle:hover { color: var(--ink); border-color: var(--line-heavy); }
+.theme-toggle svg { display: block; }
+.theme-toggle .icon-sun { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: block; }
+}
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
 
 /* ---- type scale: 1.333 perfect fourth ---- */
 h1, h2, h3 { font-weight: 600; line-height: 1.12; letter-spacing: -0.015em; margin: 0 0 calc(var(--u) / 2); text-wrap: balance; }

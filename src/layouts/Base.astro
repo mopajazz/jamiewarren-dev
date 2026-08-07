@@ -39,6 +39,18 @@ const person = {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <script is:inline>
+    // Blocking and inline (is:inline stops Astro from bundling/deferring it)
+    // so the stored theme is set on <html> before first paint — otherwise
+    // a returning visitor who chose light against a dark OS sees one dark
+    // frame before this would run.
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
@@ -74,9 +86,20 @@ const person = {
   <header class="site">
     <div class="wrap">
       <a class="brand" href="/">JAMIE_WARREN</a>
-      <nav class="main" aria-label="Primary">
-        {nav.map(n => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
-      </nav>
+      <div class="header-right">
+        <nav class="main" aria-label="Primary">
+          {nav.map(n => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+        </nav>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
   <main id="main">
@@ -93,5 +116,31 @@ const person = {
       </span>
     </div>
   </footer>
+  <script is:inline>
+    (function () {
+      var btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      var mq = window.matchMedia('(prefers-color-scheme: dark)');
+      function effectiveTheme() {
+        var explicit = document.documentElement.getAttribute('data-theme');
+        return explicit === 'dark' || explicit === 'light' ? explicit : (mq.matches ? 'dark' : 'light');
+      }
+      function reflect() {
+        btn.setAttribute('aria-pressed', String(effectiveTheme() === 'dark'));
+      }
+      reflect();
+      // Keeps aria-pressed accurate if the OS theme changes mid-visit and
+      // the visitor hasn't overridden it via this button yet.
+      mq.addEventListener('change', function () {
+        if (!document.documentElement.hasAttribute('data-theme')) reflect();
+      });
+      btn.addEventListener('click', function () {
+        var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        reflect();
+      });
+    })();
+  </script>
 </body>
 </html>
