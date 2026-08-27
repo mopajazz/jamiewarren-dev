@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monarch Compass · a tiny causal world</title>
+<meta name="description" content="A bounded, replayable simulation of monarch butterfly navigation: break the antennal clock under clear or overcast sky and discover which of its two compasses actually needs it.">
+<link rel="canonical" href="https://jamiewarren.dev/lab/monarch-compass/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #141413;   /* near-black slate ink */
+    --secondary: #FAF9F6; /* warm ivory parchment */
+    --surface: #FFFFFF;
+    --text: #111827;
+    --success: #16A34A;
+    --warning: #D97706;   /* the single clay accent, held in reserve */
+    --danger: #DC2626;
+    --sans: "Anthropic Sans", system-ui, "Helvetica Neue", Arial, sans-serif;
+    --serif: "Anthropic Serif", Georgia, "Times New Roman", serif;
+    --mono: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+    /* spacing scale 4/8/12/16/24/32 */
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--secondary);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    padding: var(--s6) var(--s4) var(--s6);
+  }
+  .page { max-width: 68rem; margin: 0 auto; }
+
+  /* type scale 12/14/16/20/24/32 */
+  .label-caps {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+  h1 { font-size: 32px; font-weight: 800; line-height: 1.15; color: var(--primary); margin: var(--s3) 0 var(--s4); }
+  h1 .u { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+  .lede { font-size: 20px; font-weight: 300; max-width: 46em; }
+  h2 { font-size: 24px; font-weight: 700; color: var(--primary); }
+  h3 { font-size: 16px; font-weight: 700; color: var(--primary); }
+
+  a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(17rem, 1fr);
+    gap: var(--s5);
+    margin-top: var(--s6);
+    align-items: start;
+  }
+  @media (max-width: 52rem) {
+    body { padding: var(--s5) var(--s3); }
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--primary);
+    padding: var(--s4);
+  }
+
+  /* ---- world card ---- */
+  .skyStrip { border-bottom: 1px solid var(--primary); padding-bottom: var(--s3); margin-bottom: var(--s3); }
+  .skyStrip .label-caps { display: flex; justify-content: space-between; margin-bottom: var(--s1); }
+  .skyStrip svg { display: block; width: 100%; height: auto; }
+  .map svg { display: block; width: 100%; height: auto; }
+
+  /* ---- panels ---- */
+  .stack > * + * { margin-top: var(--s4); }
+  .panelTitle { border-bottom: 1px solid var(--primary); padding-bottom: var(--s2); margin-bottom: var(--s3); }
+
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--primary); }
+  .seg button {
+    font-family: var(--sans); font-size: 14px; font-weight: 600;
+    background: var(--surface); color: var(--primary);
+    border: 0; border-radius: 0; padding: var(--s2) var(--s2);
+    cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--primary); }
+  .seg button[aria-pressed="true"] { background: var(--primary); color: var(--secondary); }
+  .ctrlRow + .ctrlRow { margin-top: var(--s3); }
+  .ctrlRow .label-caps { display: block; margin-bottom: var(--s1); }
+
+  .btn {
+    display: inline-block; width: 100%;
+    font-family: var(--sans); font-size: 16px; font-weight: 700;
+    border: 1px solid var(--primary); border-radius: 0;
+    background: var(--surface); color: var(--primary);
+    padding: var(--s3) var(--s4);
+    cursor: pointer;
+  }
+  .btn.cta {
+    background: var(--primary); color: var(--secondary);
+    border-radius: 0 0 8px 8px; /* signature flat-top / rounded-bottom */
+  }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btnRow { display: grid; gap: var(--s2); margin-top: var(--s4); }
+
+  /* instruments */
+  .instruments { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--primary); border: 1px solid var(--primary); }
+  .instruments > div { background: var(--surface); padding: var(--s2) var(--s3); }
+  .instruments .label-caps { font-weight: 400; }
+  .instruments output { display: block; font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--primary); }
+  .instruments .ok { color: var(--success); }
+  .instruments .bad { color: var(--danger); }
+
+  .chip {
+    display: inline-block; font-family: var(--mono); font-size: 12px; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    border: 1px solid var(--primary); padding: var(--s1) var(--s2);
+    color: var(--primary); background: var(--surface);
+  }
+  .chip.broken { border-color: var(--danger); color: var(--danger); }
+  .mech { font-family: var(--mono); font-size: 12px; margin-top: var(--s2); color: var(--text); }
+
+  .predict p { font-size: 14px; margin-bottom: var(--s2); }
+  .predict .seg button { font-size: 14px; }
+  .verdict { font-size: 14px; }
+  .verdict strong { color: var(--primary); }
+  .verdict .mark { border-bottom: 3px solid var(--warning); font-weight: 700; }
+
+  /* ---- inverted field notes ---- */
+  .notes {
+    margin-top: var(--s6);
+    background: var(--primary); color: var(--secondary);
+    padding: var(--s5) var(--s5) var(--s5);
+  }
+  .notes h2 { font-family: var(--serif); font-weight: 400; font-size: 32px; color: var(--secondary); }
+  .notes .label-caps { color: var(--secondary); }
+  .notes table { width: 100%; border-collapse: collapse; margin-top: var(--s4); }
+  .notes th, .notes td { text-align: left; vertical-align: top; padding: var(--s3) var(--s3) var(--s3) 0; border-top: 1px solid rgba(250,249,246,.35); font-size: 14px; }
+  .notes th { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+  .notes td.pending { opacity: .55; font-style: italic; }
+  .notes svg { vertical-align: middle; margin-right: var(--s2); }
+  @media (max-width: 40rem) {
+    .notes th, .notes td { display: block; white-space: normal; }
+    .notes th { padding-bottom: 0; border-top: 1px solid rgba(250,249,246,.35); }
+    .notes td { border-top: 0; padding-top: var(--s1); }
+  }
+  .notes details { margin-top: var(--s5); border-top: 1px solid rgba(250,249,246,.35); padding-top: var(--s4); }
+  .notes summary { cursor: pointer; font-weight: 700; }
+  .notes details p { margin-top: var(--s3); font-size: 14px; max-width: 60em; }
+  .notes a { color: var(--secondary); }
+
+  /* ---- footnotes ---- */
+  .fine { margin-top: var(--s6); border-top: 1px solid var(--primary); padding-top: var(--s4); font-size: 14px; max-width: 60em; }
+  .fine h3 { margin-bottom: var(--s2); }
+  .fine p + h3 { margin-top: var(--s4); }
+  .fine ul { padding-left: 1.2em; margin-top: var(--s2); }
+  .fine li { margin-bottom: var(--s1); }
+  .back { margin-top: var(--s5); font-size: 14px; }
+
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #butterfly { transition: transform .35s ease; }
+    #sunDot { transition: cx .35s ease; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <p class="label-caps">Tiny causal world · Nº 01 · The Lab</p>
+    <h1>Monarch <span class="u">Compass</span></h1>
+    <p class="lede">Every fall, a monarch that has never migrated flies up to three thousand miles to a mountain forest it has never seen. This world lets you break its instruments one at a time and watch what each one was actually doing.</p>
+  </header>
+
+  <div class="grid">
+    <!-- ================= WORLD ================= -->
+    <section class="card" aria-label="Simulation world">
+      <div class="skyStrip">
+        <p class="label-caps"><span>Sky · facing south</span><span id="skyTag">Clear</span></p>
+        <svg id="skySvg" viewBox="0 0 760 72" role="img" aria-labelledby="skyDesc">
+          <desc id="skyDesc">The southern sky. The sun moves from east on the left to west on the right as hours advance.</desc>
+          <line x1="8" y1="56" x2="752" y2="56" stroke="#141413" stroke-width="1"/>
+          <text x="16" y="50" font-family="JetBrains Mono, monospace" font-size="12" fill="#141413">E</text>
+          <text x="376" y="50" font-family="JetBrains Mono, monospace" font-size="12" fill="#141413">S</text>
+          <text x="736" y="50" font-family="JetBrains Mono, monospace" font-size="12" fill="#141413">W</text>
+          <circle id="sunDot" cx="32" cy="30" r="11" fill="#D97706"/>
+          <g id="cloudLayer" style="display:none">
+            <rect x="8" y="12" width="744" height="36" fill="#141413" opacity="0.10"/>
+            <ellipse cx="180" cy="30" rx="70" ry="14" fill="#141413" opacity="0.16"/>
+            <ellipse cx="400" cy="26" rx="90" ry="15" fill="#141413" opacity="0.16"/>
+            <ellipse cx="600" cy="32" rx="75" ry="13" fill="#141413" opacity="0.16"/>
+            <text x="380" y="34" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" letter-spacing="2" fill="#141413">OVERCAST</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="map">
+        <svg id="mapSvg" viewBox="0 0 760 560" role="img" aria-labelledby="mapDesc">
+          <desc id="mapDesc">Top-down map, north up. A dashed reference line runs southwest from the release point. The monarch's flight trail is drawn one segment per hour.</desc>
+          <!-- compass rose -->
+          <g font-family="JetBrains Mono, monospace" font-size="12" fill="#141413" text-anchor="middle">
+            <line x1="60" y1="46" x2="60" y2="82" stroke="#141413" stroke-width="1"/>
+            <path d="M 60 40 L 55 52 L 65 52 Z" fill="#141413"/>
+            <text x="60" y="32">N</text>
+            <text x="60" y="104">S</text>
+            <text x="88" y="68">E</text>
+            <text x="32" y="68">W</text>
+          </g>
+          <!-- true SW reference -->
+          <line id="targetLine" x1="620" y1="200" x2="280" y2="540" stroke="#141413" stroke-width="1.5" stroke-dasharray="10 7" opacity="0.35"/>
+          <text transform="translate(462,384) rotate(45)" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2" fill="#141413" opacity="0.6">TRUE SW · 225°</text>
+          <!-- release point -->
+          <circle cx="620" cy="200" r="5" fill="none" stroke="#141413" stroke-width="1.5"/>
+          <text x="634" y="192" font-family="JetBrains Mono, monospace" font-size="12" fill="#141413">RELEASE</text>
+          <g id="ghosts"></g>
+          <polyline id="trail" points="620,200" fill="none" stroke="#141413" stroke-width="2.5"/>
+          <g id="trailDots"></g>
+          <g id="butterfly" transform="translate(620,200) rotate(225)">
+            <path d="M 0 -9 L 3 2 L 0 0 L -3 2 Z" fill="#141413"/>
+            <path d="M -1 -2 C -12 -10 -14 4 -2 3 Z" fill="#141413"/>
+            <path d="M 1 -2 C 12 -10 14 4 2 3 Z" fill="#141413"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ================= CONTROLS ================= -->
+    <section class="stack" aria-label="Controls and instruments">
+      <div class="card predict" id="predictPanel">
+        <h3 class="panelTitle label-caps" style="border:0;padding:0;margin-bottom:8px;">Before this flight</h3>
+        <p id="predictQ">With these settings, where will the monarch be pointed at dusk?</p>
+        <div class="seg" role="group" aria-label="Your prediction">
+          <button type="button" id="predHold">Still southwest</button>
+          <button type="button" id="predDrift">Off course</button>
+        </div>
+        <p class="verdict" id="verdict" hidden></p>
+      </div>
+
+      <div class="card">
+        <h3 class="panelTitle label-caps" style="border:0;padding:0;margin-bottom:8px;">The experiment</h3>
+        <div class="ctrlRow">
+          <span class="label-caps" id="skyLbl" style="font-weight:400;">Sky condition</span>
+          <div class="seg" role="group" aria-labelledby="skyLbl">
+            <button type="button" id="skyClear" aria-pressed="true">Clear sun</button>
+            <button type="button" id="skyOver" aria-pressed="false">Overcast</button>
+          </div>
+        </div>
+        <div class="ctrlRow">
+          <span class="label-caps" id="clockLbl" style="font-weight:400;">Antennal clock</span>
+          <div class="seg" role="group" aria-labelledby="clockLbl">
+            <button type="button" id="clockOn" aria-pressed="true">Intact</button>
+            <button type="button" id="clockOff" aria-pressed="false">Disabled</button>
+          </div>
+        </div>
+        <div class="btnRow">
+          <button type="button" class="btn cta" id="advanceBtn" disabled>Advance one hour →</button>
+          <button type="button" class="btn" id="resetBtn">Reset day</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="panelTitle label-caps" style="border:0;padding:0;margin-bottom:8px;">Instruments</h3>
+        <div class="instruments">
+          <div><span class="label-caps">Hour</span><output id="outHour">07:00</output></div>
+          <div><span class="label-caps">Sun azimuth</span><output id="outSun">090°</output></div>
+          <div><span class="label-caps">Heading</span><output id="outHead">—</output></div>
+          <div><span class="label-caps">Off course</span><output id="outDev">—</output></div>
+        </div>
+        <p style="margin-top:12px;"><span class="chip" id="chip">Sun compass · time-compensated</span></p>
+        <p class="mech" id="mech">heading = sun azimuth + clock-corrected offset</p>
+        <p class="visually-hidden" role="status" aria-live="polite" id="live"></p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= FIELD NOTES ================= -->
+  <section class="notes" aria-label="Field notes">
+    <p class="label-caps">Experiment log · one row per full day flown</p>
+    <h2>Field notes</h2>
+    <table>
+      <tbody>
+        <tr><th scope="row"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#FAF9F6" stroke-width="2"/></svg>Clear · clock intact</th><td class="pending" id="note-clear-intact">not yet flown</td></tr>
+        <tr><th scope="row"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#FAF9F6" stroke-width="2" stroke-dasharray="6 4"/></svg>Clear · clock disabled</th><td class="pending" id="note-clear-disabled">not yet flown</td></tr>
+        <tr><th scope="row"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#FAF9F6" stroke-width="2" stroke-dasharray="2 3"/></svg>Overcast · clock intact</th><td class="pending" id="note-overcast-intact">not yet flown</td></tr>
+        <tr><th scope="row"><svg width="34" height="6" aria-hidden="true"><line x1="0" y1="3" x2="34" y2="3" stroke="#FAF9F6" stroke-width="2" stroke-dasharray="8 3 2 3"/></svg>Overcast · clock disabled</th><td class="pending" id="note-overcast-disabled">not yet flown</td></tr>
+      </tbody>
+    </table>
+    <details id="transfer" hidden>
+      <summary>All four rows logged — one more prediction</summary>
+      <p>A researcher keeps monarchs indoors on a light cycle shifted six hours late, then releases them under a clear sky. Predict their error before revealing:</p>
+      <details style="border:0;padding-top:8px;margin-top:0;">
+        <summary>Reveal</summary>
+        <p>They fly roughly 90° off course — six hours of sun movement, uncorrected. This clock-shift signature is precisely how researchers proved the sun compass is time-compensated, and your second row is the same effect produced a different way.</p>
+      </details>
+    </details>
+  </section>
+
+  <!-- ================= FINE PRINT ================= -->
+  <section class="fine">
+    <h3>Boundaries and simplifications</h3>
+    <ul>
+      <li>Sun azimuth moves linearly east to west at 15°/hour (07:00–19:00). Real azimuth motion varies with latitude, season, and hour.</li>
+      <li>"Clock disabled" freezes the internal clock at dawn, isolating time-compensation. Real manipulations — antennae painted black, clock-shifting, clock-gene disruption — produce related but messier misorientation.</li>
+      <li>Real migrants scatter around the mean bearing; flight here is deterministic so runs compare cleanly. Wind, thermals, and refueling are out of scope.</li>
+      <li>The magnetic compass is light-dependent (UV-A/blue), which still penetrates overcast — that is why the backup works under clouds.</li>
+    </ul>
+    <h3>Sources</h3>
+    <p>Antennal circadian clocks and the time-compensated sun compass: Merlin, Gegear &amp; Reppert, <em>Science</em> (2009); Guerra et&nbsp;al., <em>PNAS</em> (2012). Light-dependent inclination magnetic compass as backup: Guerra, Gegear &amp; Reppert, <em>Nature Communications</em> (2014). Flight-simulator sun-compass orientation: Mouritsen &amp; Frost, <em>PNAS</em> (2002). The linear sun path and dawn-frozen clock are design simplifications, not sourced claims.</p>
+    <p class="back"><a href="/lab/">← Back to the Lab</a></p>
+  </section>
+</div>
+
+<script>
+/*ENGINE-START*/
+const MonarchModel = (() => {
+  const DAWN = 7, DUSK = 19, TARGET = 225, STEP_LEN = 38;
+  const START = { x: 620, y: 200 };
+  const OFFSET_AT_DAWN = 135; /* TARGET - sunAzimuth(DAWN) */
+  function norm(d) { return ((d % 360) + 360) % 360; }
+  function sunAzimuth(hour) { return 90 + 15 * (hour - DAWN); }
+  function headingFor(sky, clockIntact, hour) {
+    if (sky === 'overcast') return TARGET;                    /* magnetic field doesn't move: no clock needed */
+    if (clockIntact) return TARGET;                           /* sun compass, time-compensated */
+    return norm(sunAzimuth(hour) + OFFSET_AT_DAWN);           /* dawn offset rides the moving sun */
+  }
+  function deviation(heading) {
+    const d = Math.abs(norm(heading) - TARGET);
+    return Math.min(d, 360 - d);
+  }
+  function step(pos, heading) {
+    const r = heading * Math.PI / 180;
+    return { x: pos.x + STEP_LEN * Math.sin(r), y: pos.y - STEP_LEN * Math.cos(r) };
+  }
+  function simulateDay(sky, clockIntact) {
+    let pos = { ...START };
+    const points = [{ ...pos }], headings = [];
+    for (let h = DAWN; h < DUSK; h++) {
+      const hd = headingFor(sky, clockIntact, h);
+      headings.push(hd);
+      pos = step(pos, hd);
+      points.push({ ...pos });
+    }
+    return { points, headings };
+  }
+  return { DAWN, DUSK, TARGET, STEP_LEN, START, OFFSET_AT_DAWN, norm, sunAzimuth, headingFor, deviation, step, simulateDay };
+})();
+if (typeof module !== 'undefined') module.exports = MonarchModel;
+/*ENGINE-END*/
+
+(() => {
+  const M = MonarchModel;
+  const $ = id => document.getElementById(id);
+  const DASH = {
+    'clear-intact': '',
+    'clear-disabled': '6 4',
+    'overcast-intact': '2 3',
+    'overcast-disabled': '8 3 2 3',
+    'mixed': '1 4'
+  };
+  const LABEL = {
+    'clear-intact': 'Clear · clock intact',
+    'clear-disabled': 'Clear · clock disabled',
+    'overcast-intact': 'Overcast · clock intact',
+    'overcast-disabled': 'Overcast · clock disabled',
+    'mixed': 'Mixed conditions'
+  };
+  const FINDINGS = {
+    'clear-intact': 'Held 225° all day. The sun swept 180° across the sky; the heading never moved. Something is subtracting the sun’s motion — that something keeps time.',
+    'clear-disabled': 'Started southwest, ended pointing northeast. It kept dawn’s sun-angle all day, so its course rotated exactly as fast as the sun did.',
+    'overcast-intact': 'Held 225° with no sun at all. A second compass is reading the magnetic field.',
+    'overcast-disabled': 'Still held 225°. The magnetic compass never needed the clock — the field doesn’t move, so there is nothing to correct. The clock serves only the sun.'
+  };
+
+  let state;
+  const ghosts = []; /* {combo, points} newest-first, one per combo */
+
+  function freshState() {
+    return {
+      hour: M.DAWN,
+      pos: { ...M.START },
+      points: [{ ...M.START }],
+      lastHeading: null,
+      sky: state ? state.sky : 'clear',
+      clockIntact: state ? state.clockIntact : true,
+      startSky: null, startClock: null,
+      conditionsChanged: false,
+      phase: 'predict',        /* predict | flying | done */
+      prediction: null         /* 'hold' | 'drift' */
+    };
+  }
+
+  function comboKey() {
+    if (state.conditionsChanged) return 'mixed';
+    return `${state.sky}-${state.clockIntact ? 'intact' : 'disabled'}`;
+  }
+  function fmtDeg(d) { return String(Math.round(M.norm(d))).padStart(3, '0') + '°'; }
+  function fmtHour(h) { return String(h).padStart(2, '0') + ':00'; }
+
+  function chipState() {
+    if (state.sky === 'overcast') return { text: 'Magnetic compass · clock-free', broken: false, mech: 'heading = magnetic southwest — the field is stationary' };
+    if (state.clockIntact) return { text: 'Sun compass · time-compensated', broken: false, mech: 'heading = sun azimuth + clock-corrected offset' };
+    return { text: 'Sun compass · compensation broken', broken: true, mech: 'heading = sun azimuth + dawn offset (135°) — no correction' };
+  }
+
+  function render() {
+    /* sky strip */
+    const az = M.sunAzimuth(Math.min(state.hour, M.DUSK));
+    const sunX = 8 + (az - 90) / 180 * 744;
+    $('sunDot').setAttribute('cx', sunX);
+    $('sunDot').style.display = state.sky === 'overcast' ? 'none' : '';
+    $('cloudLayer').style.display = state.sky === 'overcast' ? '' : 'none';
+    $('skyTag').textContent = state.sky === 'overcast' ? 'Overcast' : 'Clear';
+
+    /* toggles */
+    $('skyClear').setAttribute('aria-pressed', state.sky === 'clear');
+    $('skyOver').setAttribute('aria-pressed', state.sky === 'overcast');
+    $('clockOn').setAttribute('aria-pressed', state.clockIntact);
+    $('clockOff').setAttribute('aria-pressed', !state.clockIntact);
+
+    /* map trail */
+    $('trail').setAttribute('points', state.points.map(p => `${p.x},${p.y}`).join(' '));
+    $('trailDots').innerHTML = state.points.map(p =>
+      `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="#141413"/>`).join('');
+    const hd = state.lastHeading === null ? M.TARGET : state.lastHeading;
+    $('butterfly').setAttribute('transform', `translate(${state.pos.x},${state.pos.y}) rotate(${hd})`);
+
+    /* ghosts */
+    $('ghosts').innerHTML = ghosts.map(g =>
+      `<polyline points="${g.points.map(p => `${p.x},${p.y}`).join(' ')}" fill="none" stroke="#141413" stroke-width="2" opacity="0.28" ${DASH[g.combo] ? `stroke-dasharray="${DASH[g.combo]}"` : ''}><title>${LABEL[g.combo]}</title></polyline>`).join('');
+
+    /* instruments */
+    $('outHour').textContent = fmtHour(state.hour);
+    $('outSun').textContent = fmtDeg(az);
+    if (state.lastHeading === null) {
+      $('outHead').textContent = '—'; $('outHead').className = '';
+      $('outDev').textContent = '—'; $('outDev').className = '';
+    } else {
+      const dev = M.deviation(state.lastHeading);
+      $('outHead').textContent = fmtDeg(state.lastHeading);
+      $('outDev').textContent = (dev <= 10 ? '✓ ' : '▲ ') + Math.round(dev) + '°';
+      $('outDev').className = dev <= 10 ? 'ok' : 'bad';
+      $('outHead').className = dev <= 10 ? '' : 'bad';
+    }
+
+    /* chip + mechanism */
+    const c = chipState();
+    $('chip').textContent = c.text;
+    $('chip').className = 'chip' + (c.broken ? ' broken' : '');
+    $('mech').textContent = c.mech;
+
+    /* phase-dependent controls */
+    $('advanceBtn').disabled = state.phase !== 'flying';
+    $('predHold').disabled = $('predDrift').disabled = state.phase !== 'predict';
+    $('predictPanel').querySelector('.seg').style.display = state.phase === 'predict' ? '' : 'none';
+    if (state.phase === 'predict') {
+      $('predictQ').textContent = 'With these settings, where will the monarch be pointed at dusk?';
+      $('verdict').hidden = true;
+    } else if (state.phase === 'flying') {
+      $('predictQ').textContent = `You predicted: ${state.prediction === 'hold' ? 'still southwest' : 'off course'}. Fly the day and see.`;
+    }
+  }
+
+  function announce(msg) { $('live').textContent = msg; }
+
+  function advance() {
+    if (state.phase !== 'flying' || state.hour >= M.DUSK) return;
+    if (state.startSky === null) { state.startSky = state.sky; state.startClock = state.clockIntact; }
+    if (state.sky !== state.startSky || state.clockIntact !== state.startClock) state.conditionsChanged = true;
+    const hd = M.headingFor(state.sky, state.clockIntact, state.hour);
+    state.lastHeading = hd;
+    state.pos = M.step(state.pos, hd);
+    state.points.push({ ...state.pos });
+    state.hour++;
+    const dev = M.deviation(hd);
+    announce(`Hour ${fmtHour(state.hour)}. Heading ${Math.round(M.norm(hd))} degrees, ${Math.round(dev)} degrees off course.`);
+    if (state.hour >= M.DUSK) finishDay();
+    render();
+  }
+
+  function finishDay() {
+    state.phase = 'done';
+    const combo = comboKey();
+    const finalDev = M.deviation(state.lastHeading);
+    const held = finalDev <= 10;
+    const right = (held && state.prediction === 'hold') || (!held && state.prediction === 'drift');
+
+    /* log ghost (replace same combo) */
+    const gi = ghosts.findIndex(g => g.combo === combo);
+    if (gi >= 0) ghosts.splice(gi, 1);
+    ghosts.unshift({ combo, points: state.points.slice() });
+    if (ghosts.length > 5) ghosts.pop();
+
+    /* fill field notes */
+    if (combo !== 'mixed') {
+      const cell = $('note-' + combo);
+      cell.textContent = FINDINGS[combo];
+      cell.classList.remove('pending');
+      const logged = ['clear-intact','clear-disabled','overcast-intact','overcast-disabled']
+        .every(k => !$('note-' + k).classList.contains('pending'));
+      if (logged) $('transfer').hidden = false;
+    }
+
+    const outcome = held
+      ? `Dusk. Final heading ${fmtDeg(state.lastHeading)} — it held southwest.`
+      : `Dusk. Final heading ${fmtDeg(state.lastHeading)}, ${Math.round(finalDev)}° off course — it drifted.`;
+    const judged = right ? 'You called it.' : 'Not what you predicted.';
+    $('verdict').innerHTML = `<strong>${outcome}</strong> <span class="mark">${judged}</span> ${combo === 'mixed'
+      ? 'Conditions changed mid-flight, so this run is logged as mixed — hold them steady for a clean row.'
+      : 'Now change exactly one thing, predict again, and compare trails.'}`;
+    $('verdict').hidden = false;
+    announce(outcome + ' ' + judged);
+  }
+
+  function reset() {
+    state = freshState();
+    announce('Day reset. Release point, 07:00. Make a prediction to fly.');
+    render();
+  }
+
+  function setSky(v) { state.sky = v; render(); }
+  function setClock(v) { state.clockIntact = v; render(); }
+  function predict(v) {
+    if (state.phase !== 'predict') return;
+    state.prediction = v; state.phase = 'flying';
+    announce('Prediction locked. Advance one hour to fly.');
+    render();
+    $('advanceBtn').focus();
+  }
+
+  $('skyClear').addEventListener('click', () => setSky('clear'));
+  $('skyOver').addEventListener('click', () => setSky('overcast'));
+  $('clockOn').addEventListener('click', () => setClock(true));
+  $('clockOff').addEventListener('click', () => setClock(false));
+  $('advanceBtn').addEventListener('click', advance);
+  $('resetBtn').addEventListener('click', reset);
+  $('predHold').addEventListener('click', () => predict('hold'));
+  $('predDrift').addEventListener('click', () => predict('drift'));
+
+  state = freshState();
+  render();
+})();
+</script>
+</body>
+</html>
