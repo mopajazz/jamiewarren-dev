@@ -27,6 +27,9 @@ const lab = defineCollection({
     year: z.number().int().min(2000).max(2100).optional(),
     link: z.string().optional(),
     artifactNote: z.string().optional(),
+    // Folder name under public/h5p/ holding an unzipped .h5p package. When set,
+    // a player page is built at /lab/h5p/<entry-slug>/ and the Lab row links to it.
+    h5p: z.string().optional(),
     media: z.object({
       src: z.string(),
       alt: z.string(),

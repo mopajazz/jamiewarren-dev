@@ -17,3 +17,6 @@ pnpm-debug.log*
 
 # macOS
 .DS_Store
+
+# copied from node_modules/h5p-standalone by scripts/copy-h5p-player.mjs
+public/h5p-player/
