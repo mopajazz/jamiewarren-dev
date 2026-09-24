@@ -1,0 +1,71 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+// One page per Lab entry that sets `h5p` (a folder under public/h5p/).
+// All packages share public/h5p/libraries/, so adding an activity whose
+// libraries are already there only needs its h5p.json and content/ folder.
+export async function getStaticPaths() {
+  const entries = await getCollection('lab', (e) => e.data.h5p);
+  return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { title, blurb, tags, h5p } = entry.data;
+const { Content } = await entry.render();
+const options = {
+  h5pJsonPath: `/h5p/${h5p}`,
+  librariesPath: '/h5p/libraries',
+  frameJs: '/h5p-player/frame.bundle.js',
+  frameCss: '/h5p-player/styles/h5p.css',
+  fullScreen: true,
+};
+---
+<Base title={`${title} - Jamie Warren`} description={blurb}>
+  <article class="h5p-page">
+    <p class="eyebrow">Lab{tags.length > 0 && ` // ${tags.join(' / ')}`}</p>
+    <h1>{title}</h1>
+    <p class="lede">{blurb}</p>
+    <div class="notes"><Content /></div>
+
+    <div class="player" id="h5p-container">
+      <p class="status" id="h5p-status">Loading activity…</p>
+    </div>
+    <noscript><p class="status">This interactive activity needs JavaScript.</p></noscript>
+
+    <p class="back-link"><a href="/lab/">Back to Lab</a></p>
+  </article>
+</Base>
+
+<script is:inline src="/h5p-player/main.bundle.js" charset="UTF-8"></script>
+<script is:inline define:vars={{ options }}>
+  const el = document.getElementById('h5p-container');
+  const status = document.getElementById('h5p-status');
+  new H5PStandalone.H5P(el, options)
+    .then(() => status.remove())
+    .catch((err) => {
+      console.error(err);
+      status.textContent = 'The activity failed to load.';
+    });
+</script>
+
+<style>
+  .h5p-page {
+    max-width: 58rem;
+    margin: 0 auto;
+    padding: calc(var(--u) * 2) var(--u) calc(var(--u) * 3);
+  }
+  .notes:empty { display: none; }
+  /* H5P content only ships a light theme, so it keeps a white ground in dark mode. */
+  .player {
+    margin-top: calc(var(--u) * 1.5);
+    border: 1px solid var(--line);
+    background: white;
+  }
+  .status { font-family: var(--mono); font-size: .85rem; color: var(--mist); padding: var(--u); margin: 0; }
+  .player .status { color: oklch(45% 0.022 80); }
+  .back-link { margin-top: calc(var(--u) * 2); }
+  @media (max-width: 40rem) {
+    .h5p-page { padding-top: calc(var(--u) * 1.5); }
+  }
+</style>

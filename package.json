@@ -6,14 +6,17 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "predev": "node scripts/copy-h5p-player.mjs",
+    "prebuild": "node scripts/copy-h5p-player.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@astrojs/sitemap": "3.2.1",
-    "astro": "^4.16.19"
+    "astro": "^4.16.19",
+    "h5p-standalone": "3.8.2"
   },
   "type": "module"
 }

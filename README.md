@@ -17,6 +17,14 @@ sitemap all derive from it, so change it there if the domain ever moves.
   file with frontmatter (title, summary, order, tools, link, featured).
   That's the whole job.** No layout code, no HTML.
 - `src/content/lab/*.md` — Lab entries. Frontmatter only; body optional.
+- `public/h5p/` — H5P activities, played in-page by
+  [h5p-standalone](https://github.com/tunapanda/h5p-standalone). **To add
+  one:** rename the `.h5p` to `.zip` and unzip it. Move its `h5p.json` and
+  `content/` into `public/h5p/<name>/`, and merge the library folders (all the
+  others) into `public/h5p/libraries/`, which every activity shares. Then add a
+  Lab entry with `h5p: "<name>"`. The page appears at `/lab/h5p/<entry-slug>/`.
+  The player itself is copied from `node_modules` into `public/h5p-player/`
+  (gitignored) by `scripts/copy-h5p-player.mjs` before each dev/build run.
 - `src/content/config.ts` — the schemas. Add a field here (e.g. `year`),
   and every entry can use it.
 - `src/styles/global.css` — all design tokens in `:root`. One place.

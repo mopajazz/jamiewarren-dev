@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.order);
+const hrefFor = (l) => l.data.link ?? (l.data.h5p ? `/lab/h5p/${l.slug}/` : undefined);
 ---
 <Base title="Lab — Jamie Warren" description="Live experiments, course artifacts, component systems, web audio tools, and interactive learning prototypes from Jamie Warren.">
   <section class="band">
@@ -12,8 +13,8 @@ const lab = (await getCollection('lab')).sort((a,b) => a.data.order - b.data.ord
       <ul class="rows">
         {lab.map((l, i) => (
           <li>
-            {l.data.link ? (
-              <a class="row" href={l.data.link}>
+            {hrefFor(l) ? (
+              <a class="row" href={hrefFor(l)}>
                 <span class="idx">{String(i+1).padStart(2,'0')}</span>
                 <span>
                   <span class="row-title">{l.data.title}</span>
